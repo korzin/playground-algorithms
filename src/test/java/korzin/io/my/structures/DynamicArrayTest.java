@@ -1,4 +1,4 @@
-package korzin.io.my.dynamicarray;
+package korzin.io.my.structures;
 
 import org.junit.Test;
 
