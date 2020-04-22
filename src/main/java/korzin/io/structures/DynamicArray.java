@@ -47,9 +47,7 @@ public class DynamicArray {
 
     public Object remove(int index) {
         Object toRemove = arr[index];
-        System.out.println(">>> " + arr.length + " " + size);
         System.arraycopy(arr, index + 1, arr, index, size - index - 1);
-        System.out.println("<<< " + arr.length + " " + size);
         arr[--size] = null;
         return toRemove;
     }
