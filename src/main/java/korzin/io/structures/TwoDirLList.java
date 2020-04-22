@@ -1,8 +1,8 @@
-package korzin.io.my.structures;
+package korzin.io.structures;
 
 import java.util.NoSuchElementException;
 
-public class OneDirLList<T> {
+public class TwoDirLList<T> {
 
     private Node<T> head;
     private Node<T> tail;
@@ -10,7 +10,7 @@ public class OneDirLList<T> {
     public int size() {
         if (empty()) return 0;
         int size = 0;
-        Node curr = head;
+        TwoDirLList.Node curr = head;
         while (curr != null) {
             size++;
             curr = curr.next;
@@ -32,18 +32,19 @@ public class OneDirLList<T> {
     public void pushFront(T key) {
         Node<T> newNode = new Node<T>();
         newNode.value = key;
+
         if (head != null) {
             Node<T> oldHead = head;
             head = newNode;
             head.next = oldHead;
+            oldHead.prev = head;
         } else {
             tail = newNode;
+            head = newNode;
         }
-        head = newNode;
     }
 
     public Node<T> topFront() {
-        if (head == null) throw new NoSuchElementException();
         return head;
     }
 
@@ -54,21 +55,26 @@ public class OneDirLList<T> {
             tail = null;
         } else {
             head = head.next;
+            head.prev = null;
         }
     }
 
     public void pushBack(T key) {
-        if (tail == null) throw new NoSuchElementException();
+        Node<T> newNode = new Node<T>();
+        newNode.value = key;
 
-        Node<T> newTail = new Node<>();
-        newTail.value = key;
-
-        tail.next = newTail;
-        tail = newTail;
+        if (tail != null) {
+            Node<T> oldTail = tail;
+            tail = newNode;
+            tail.prev = oldTail;
+            oldTail.next = tail;
+        } else {
+            head = newNode;
+            tail = newNode;
+        }
     }
 
     public Node<T> topBack() {
-        if (tail == null) throw new NoSuchElementException();
         return tail;
     }
 
@@ -78,12 +84,8 @@ public class OneDirLList<T> {
             head = null;
             tail = null;
         } else {
-            Node<T> curr = head;
-            while (curr.next.next != null) {
-                curr = curr.next;
-            }
-            curr.next = null;
-            tail = curr;
+            tail = tail.prev;
+            tail.next = null;
         }
     }
 
@@ -91,7 +93,7 @@ public class OneDirLList<T> {
         if (head == null) return false;
         Node<T> curr = head;
         while (curr != null) {
-            if (curr.value == key) return true;
+            if (curr.value.equals(key)) return true;
             curr = curr.next;
         }
         return false;
@@ -102,22 +104,21 @@ public class OneDirLList<T> {
             throw new NoSuchElementException();
         } else if (head.value == key) {
             popFront();
-            return;
         } else if (tail.value == key) {
             popBack();
-            return;
-        }
-
-        Node<T> curr = head;
-        while (curr.next != null && curr.next.value.equals(key)) {
-            curr = curr.next;
-        }
-        if (curr.next == null) {
-            throw new NoSuchElementException();
         } else {
-            Node<T> newNext = curr.next.next;
-            curr.next.value = null; // help GC
-            curr.next = newNext;
+            Node<T> curr = head;
+            while (curr.next != null && curr.next.value.equals(key)) {
+                curr = curr.next;
+            }
+            if (curr.next == null) {
+                throw new NoSuchElementException();
+            } else {
+                Node<T> newNext = curr.next.next;
+                curr.next.value = null; // help GC
+                curr.next = newNext;
+                newNext.prev = curr;
+            }
         }
     }
 
@@ -125,7 +126,7 @@ public class OneDirLList<T> {
         return head == null;
     }
 
-    public void addBefore(Node node, T key) {
+    public void addBefore(Node<T> node, T key) {
         if (head == null) {
             throw new NoSuchElementException();
         } else if (head.value == node.value) {
@@ -134,25 +135,32 @@ public class OneDirLList<T> {
             Node<T> newOne = new Node<>();
             newOne.value = key;
 
-            Node<T> curr = head;
-            while (curr.next != null && !curr.next.value.equals(node.value)) {
-                curr = curr.next;
+            newOne.prev = node.prev;
+            newOne.next = node;
+            if(node.prev != null) {
+                node.prev.next = newOne;
             }
-            if (curr.next == null) throw new NoSuchElementException();
-            newOne.next = curr.next;
-            curr.next = newOne;
+            node.prev = newOne;
         }
     }
 
     public void addAfter(Node<T> node, T key) {
-        Node<T> newNode = new Node<>();
-        newNode.value = key;
+        if (head == null) {
+            throw new NoSuchElementException();
+        } else if (tail.value == node.value) {
+            pushBack(key);
+        } else {
+            Node<T> newOne = new Node<>();
+            newOne.value = key;
 
-        Node<T> next = node.next;
-        node.next = newNode;
-        newNode.next = next;
-        if (node == tail) {
-            tail = newNode;
+            newOne.prev = node;
+            newOne.next = node.next;
+
+            if(node.next != null) {
+                node.next.prev = newOne;
+            }
+            node.next = newOne;
+
         }
     }
 
@@ -171,7 +179,8 @@ public class OneDirLList<T> {
 
     public static class Node<N> {
         private N value;
-        private Node<N> next;
+        private TwoDirLList.Node<N> next;
+        private TwoDirLList.Node<N> prev;
 
         public N getValue() {
             return value;
@@ -186,4 +195,5 @@ public class OneDirLList<T> {
             return value.toString();
         }
     }
+
 }

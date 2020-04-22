@@ -1,4 +1,4 @@
-package korzin.io.my.structures;
+package korzin.io.structures;
 
 import java.util.Arrays;
 

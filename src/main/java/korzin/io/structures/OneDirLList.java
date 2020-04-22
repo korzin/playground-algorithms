@@ -1,8 +1,8 @@
-package korzin.io.my.structures;
+package korzin.io.structures;
 
 import java.util.NoSuchElementException;
 
-public class TwoDirLList<T> {
+public class OneDirLList<T> {
 
     private Node<T> head;
     private Node<T> tail;
@@ -10,7 +10,7 @@ public class TwoDirLList<T> {
     public int size() {
         if (empty()) return 0;
         int size = 0;
-        TwoDirLList.Node curr = head;
+        Node curr = head;
         while (curr != null) {
             size++;
             curr = curr.next;
@@ -32,19 +32,18 @@ public class TwoDirLList<T> {
     public void pushFront(T key) {
         Node<T> newNode = new Node<T>();
         newNode.value = key;
-
         if (head != null) {
             Node<T> oldHead = head;
             head = newNode;
             head.next = oldHead;
-            oldHead.prev = head;
         } else {
             tail = newNode;
-            head = newNode;
         }
+        head = newNode;
     }
 
     public Node<T> topFront() {
+        if (head == null) throw new NoSuchElementException();
         return head;
     }
 
@@ -55,26 +54,21 @@ public class TwoDirLList<T> {
             tail = null;
         } else {
             head = head.next;
-            head.prev = null;
         }
     }
 
     public void pushBack(T key) {
-        Node<T> newNode = new Node<T>();
-        newNode.value = key;
+        if (tail == null) throw new NoSuchElementException();
 
-        if (tail != null) {
-            Node<T> oldTail = tail;
-            tail = newNode;
-            tail.prev = oldTail;
-            oldTail.next = tail;
-        } else {
-            head = newNode;
-            tail = newNode;
-        }
+        Node<T> newTail = new Node<>();
+        newTail.value = key;
+
+        tail.next = newTail;
+        tail = newTail;
     }
 
     public Node<T> topBack() {
+        if (tail == null) throw new NoSuchElementException();
         return tail;
     }
 
@@ -84,8 +78,12 @@ public class TwoDirLList<T> {
             head = null;
             tail = null;
         } else {
-            tail = tail.prev;
-            tail.next = null;
+            Node<T> curr = head;
+            while (curr.next.next != null) {
+                curr = curr.next;
+            }
+            curr.next = null;
+            tail = curr;
         }
     }
 
@@ -93,7 +91,7 @@ public class TwoDirLList<T> {
         if (head == null) return false;
         Node<T> curr = head;
         while (curr != null) {
-            if (curr.value.equals(key)) return true;
+            if (curr.value == key) return true;
             curr = curr.next;
         }
         return false;
@@ -104,21 +102,22 @@ public class TwoDirLList<T> {
             throw new NoSuchElementException();
         } else if (head.value == key) {
             popFront();
+            return;
         } else if (tail.value == key) {
             popBack();
+            return;
+        }
+
+        Node<T> curr = head;
+        while (curr.next != null && curr.next.value.equals(key)) {
+            curr = curr.next;
+        }
+        if (curr.next == null) {
+            throw new NoSuchElementException();
         } else {
-            Node<T> curr = head;
-            while (curr.next != null && curr.next.value.equals(key)) {
-                curr = curr.next;
-            }
-            if (curr.next == null) {
-                throw new NoSuchElementException();
-            } else {
-                Node<T> newNext = curr.next.next;
-                curr.next.value = null; // help GC
-                curr.next = newNext;
-                newNext.prev = curr;
-            }
+            Node<T> newNext = curr.next.next;
+            curr.next.value = null; // help GC
+            curr.next = newNext;
         }
     }
 
@@ -126,7 +125,7 @@ public class TwoDirLList<T> {
         return head == null;
     }
 
-    public void addBefore(Node<T> node, T key) {
+    public void addBefore(Node node, T key) {
         if (head == null) {
             throw new NoSuchElementException();
         } else if (head.value == node.value) {
@@ -135,32 +134,25 @@ public class TwoDirLList<T> {
             Node<T> newOne = new Node<>();
             newOne.value = key;
 
-            newOne.prev = node.prev;
-            newOne.next = node;
-            if(node.prev != null) {
-                node.prev.next = newOne;
+            Node<T> curr = head;
+            while (curr.next != null && !curr.next.value.equals(node.value)) {
+                curr = curr.next;
             }
-            node.prev = newOne;
+            if (curr.next == null) throw new NoSuchElementException();
+            newOne.next = curr.next;
+            curr.next = newOne;
         }
     }
 
     public void addAfter(Node<T> node, T key) {
-        if (head == null) {
-            throw new NoSuchElementException();
-        } else if (tail.value == node.value) {
-            pushBack(key);
-        } else {
-            Node<T> newOne = new Node<>();
-            newOne.value = key;
+        Node<T> newNode = new Node<>();
+        newNode.value = key;
 
-            newOne.prev = node;
-            newOne.next = node.next;
-
-            if(node.next != null) {
-                node.next.prev = newOne;
-            }
-            node.next = newOne;
-
+        Node<T> next = node.next;
+        node.next = newNode;
+        newNode.next = next;
+        if (node == tail) {
+            tail = newNode;
         }
     }
 
@@ -179,8 +171,7 @@ public class TwoDirLList<T> {
 
     public static class Node<N> {
         private N value;
-        private TwoDirLList.Node<N> next;
-        private TwoDirLList.Node<N> prev;
+        private Node<N> next;
 
         public N getValue() {
             return value;
@@ -195,5 +186,4 @@ public class TwoDirLList<T> {
             return value.toString();
         }
     }
-
 }

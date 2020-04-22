@@ -1,4 +1,4 @@
-package korzin.io.my.structures;
+package korzin.io.structures;
 
 public class Stack<T> {
 
