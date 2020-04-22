@@ -45,7 +45,6 @@ public class TwoDirLList<T> {
     }
 
     public Node<T> topFront() {
-        if (head == null) throw new NoSuchElementException();
         return head;
     }
 
@@ -76,7 +75,6 @@ public class TwoDirLList<T> {
     }
 
     public Node<T> topBack() {
-        if (tail == null) throw new NoSuchElementException();
         return tail;
     }
 
