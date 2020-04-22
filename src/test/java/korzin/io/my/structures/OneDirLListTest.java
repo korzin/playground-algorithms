@@ -60,8 +60,6 @@ public class OneDirLListTest {
 
         assertEquals(new Integer(11), ll.topFront().getValue());
 
-        System.out.println(",><>< " + ll.toString());
-
         assertTrue(ll.find(22));
         assertFalse(ll.find(222));
     }

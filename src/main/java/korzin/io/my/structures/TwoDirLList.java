@@ -139,9 +139,9 @@ public class TwoDirLList<T> {
 
             newOne.prev = node.prev;
             newOne.next = node;
-
-            node.prev.next = newOne;
-
+            if(node.prev != null) {
+                node.prev.next = newOne;
+            }
             node.prev = newOne;
         }
     }
@@ -158,8 +158,9 @@ public class TwoDirLList<T> {
             newOne.prev = node;
             newOne.next = node.next;
 
-            node.next.prev = newOne;
-
+            if(node.next != null) {
+                node.next.prev = newOne;
+            }
             node.next = newOne;
 
         }
