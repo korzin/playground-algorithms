@@ -18,14 +18,17 @@ public class BalancedBrackets {
         Stack<String> stack = new Stack<>();
         for (String s : sequence) {
             if (symbolsToHandle.contains(s)) {
-                String head = stack.top();
-                String closingSymbol;
-                if (head == null
-                        || (closingSymbol = closeToOpenSymbolsMap.get(s)) == null
-                        || !head.equals(closingSymbol)) {
-                    stack.push(s);
+                if (closeToOpenSymbolsMap.containsKey(s)) {
+                    if (stack.top() == null) {
+                        return false;
+                    }
+                    String head = stack.pop();
+                    String closingSymbol = closeToOpenSymbolsMap.get(s);
+                    if (!head.equals(closingSymbol)) {
+                        return false;
+                    }
                 } else {
-                    stack.pop();
+                    stack.push(s);
                 }
             }
         }
