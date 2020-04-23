@@ -4,12 +4,12 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class QueueTest {
+public class LinkedListQueueTest {
 
     @Test
     public void testQueue() {
 
-        Queue<String> queue = new Queue<>();
+        Queue<String> queue = new LinkedListQueue<>();
 
         queue.enqueue("111");
         assertFalse(queue.empty());
