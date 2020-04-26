@@ -41,10 +41,16 @@ public class Tree<T> {
         }
     }
 
-//        public Node<T> getParent() {
-//        }
-//
-//        private void setParent(Node<T> parent) {
-//        }
+    public Integer size() {
+        if(children.isEmpty()){
+            return 1;
+        } else {
+            return 1 + children.stream().mapToInt(Tree::size).sum();
+        }
+    }
 
+    @Override
+    public String toString() {
+        return "data: " + data + ", childrenSize: " + children.size();
+    }
 }

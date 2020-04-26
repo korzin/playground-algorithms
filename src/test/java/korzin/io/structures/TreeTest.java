@@ -1,15 +1,13 @@
 package korzin.io.structures;
 
 import org.junit.Test;
-
 import java.util.Arrays;
-
 import static org.junit.Assert.assertEquals;
 
 public class TreeTest {
 
     @Test
-    public void testHeight() {
+    public void testHeightAndSize() {
         Tree<Integer> head = new Tree<>(111);
         Tree<Integer> lvl2node1 = new Tree<>(211);
         Tree<Integer> lvl2node2 = new Tree<>(212);
@@ -31,11 +29,14 @@ public class TreeTest {
         lvl3node4.addChildren(Arrays.asList(lvl4node3, lvl4node4));
         Tree<Integer> lvl5node1 = new Tree<>(313111);
         lvl4node3.addChild(lvl5node1);
-
+        //height
         assertEquals((Integer) 5, head.height());
         assertEquals((Integer) 1, lvl2node2.height());
         assertEquals((Integer) 2, lvl4node3.height());
         assertEquals((Integer) 2, lvl3node1.height());
+        //size
+        assertEquals((Integer) 15, head.size());
+        assertEquals((Integer) 7, lvl2node3.size());
 
     }
 }
