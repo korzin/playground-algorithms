@@ -1,23 +1,23 @@
 package korzin.io.structures;
 
-public class BTree<T extends Comparable<T>> {
+public class SimpleBTree<T extends Comparable<T>> {
 
     private T data;
 
-    private BTree<T> parent;
+    private SimpleBTree<T> parent;
 
-    private BTree<T> left;
-    private BTree<T> right;
+    private SimpleBTree<T> left;
+    private SimpleBTree<T> right;
 
-    public BTree(T data) {
+    public SimpleBTree(T data) {
         this.data = data;
     }
 
-    public BTree<T> getLeft() {
+    public SimpleBTree<T> getLeft() {
         return left;
     }
 
-    public BTree<T> getRight() {
+    public SimpleBTree<T> getRight() {
         return right;
     }
 
@@ -25,15 +25,15 @@ public class BTree<T extends Comparable<T>> {
         return data;
     }
 
-    public BTree<T> addLeft(T leftValue) {
-        BTree<T> left = new BTree<>(leftValue);
+    public SimpleBTree<T> addLeft(T leftValue) {
+        SimpleBTree<T> left = new SimpleBTree<>(leftValue);
         left.parent = this;
         this.left = left;
         return left;
     }
 
-    public BTree<T> addRight(T rightValue) {
-        BTree<T> right = new BTree<>(rightValue);
+    public SimpleBTree<T> addRight(T rightValue) {
+        SimpleBTree<T> right = new SimpleBTree<>(rightValue);
         right.parent = this;
         this.right = right;
         return right;
@@ -52,7 +52,7 @@ public class BTree<T extends Comparable<T>> {
     }
 
     public int depth() {
-        BTree<T> curr = this;
+        SimpleBTree<T> curr = this;
         int depth = 0;
         while (curr.parent != null) {
             curr = curr.parent;
