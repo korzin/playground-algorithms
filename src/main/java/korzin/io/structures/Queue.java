@@ -2,10 +2,9 @@ package korzin.io.structures;
 
 public interface Queue<T> {
 
-    void enqueue(T value);
+  void enqueue(T value);
 
-    boolean empty();
+  boolean empty();
 
-    T dequeue();
-
+  T dequeue();
 }

@@ -94,7 +94,6 @@ public class BSTreeTest {
 
     for (BSTree<Integer, Object> entry : bsTree) {
       Integer key = entry.getData().getKey();
-      System.out.println("<> " + key);
       assertEquals(expectedOrder.dequeue(), key);
       if (i++ > 100) {
         break;
