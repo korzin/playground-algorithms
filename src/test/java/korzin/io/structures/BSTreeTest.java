@@ -2,6 +2,8 @@ package korzin.io.structures;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
 public class BSTreeTest {
@@ -58,5 +60,45 @@ public class BSTreeTest {
     BSTree<Integer, String> node1500 = node2300.getLeft();
     assertEquals((Integer) 1500, node1500.getData().getKey());
     assertEquals((Integer) 1000, node1500.getLeft().getData().getKey());
+  }
+
+  @Test
+  public void test_TraversalStrategy_IN_ORDER_BY_LOOP() {
+    BSTree<Integer, Object> bsTree =
+        BSTree.initTree(250, null, BSTree.TraversalStrategy.IN_ORDER_BY_LOOP);
+
+    bsTree.add(240, null);
+    bsTree.add(200, null);
+    bsTree.add(150, null);
+
+    bsTree.add(225, null);
+
+    bsTree.add(300, null);
+    bsTree.add(350, null);
+
+    bsTree.add(750, null);
+    bsTree.add(650, null);
+    bsTree.add(600, null);
+    bsTree.add(550, null);
+    bsTree.add(505, null);
+
+    bsTree.add(800, null);
+    bsTree.add(850, null);
+    bsTree.add(825, null);
+
+    int i = 0;
+    LinkedListQueue<Integer> expectedOrder =
+        LinkedListQueue.fromList(
+            Arrays.asList(
+                150, 200, 225, 240, 250, 300, 350, 505, 550, 600, 650, 750, 800, 825, 850));
+
+    for (BSTree<Integer, Object> entry : bsTree) {
+      Integer key = entry.getData().getKey();
+      System.out.println("<> " + key);
+      assertEquals(expectedOrder.dequeue(), key);
+      if (i++ > 100) {
+        break;
+      }
+    }
   }
 }
