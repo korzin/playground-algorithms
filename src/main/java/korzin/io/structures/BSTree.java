@@ -1,5 +1,6 @@
 package korzin.io.structures;
 
+import java.util.NoSuchElementException;
 import java.util.Objects;
 
 public class BSTree<K extends Comparable<K>, V> {
@@ -68,6 +69,60 @@ public class BSTree<K extends Comparable<K>, V> {
       data.value = value;
     }
     return this;
+  }
+
+  private BSTree<K, V> getLowest() {
+    BSTree<K, V> curr = this;
+    do {
+      curr = curr.left;
+    } while (curr.left != null);
+    return curr;
+  }
+
+  public V remove(K key) {
+    Objects.requireNonNull(key);
+
+    int compareResult = key.compareTo(data.getKey());
+    if (compareResult > 0) {
+      if (right == null) {
+        throw new NoSuchElementException();
+      } else {
+        return right.remove(key);
+      }
+    } else if (compareResult < 0) {
+      if (left == null) {
+        throw new NoSuchElementException();
+      } else {
+        return left.remove(key);
+      }
+    } else {
+      V returnValue = data.getValue();
+      BSTree<K, V> replacement;
+      if (right != null) {
+        replacement = right;
+        if (left != null) {
+          BSTree<K, V> lowest = replacement.getLowest();
+          if (lowest == null) {
+            replacement.left = left;
+          } else {
+            lowest.left = left;
+          }
+        }
+      } else if (left != null) {
+        replacement = left;
+      } else {
+        replacement = null;
+      }
+
+      if (parent.left == this) {
+        parent.left = replacement;
+      } else if (parent.right == this) {
+        parent.right = replacement;
+      } else {
+        throw new IllegalStateException("Parent doesn't refer to current node");
+      }
+      return returnValue;
+    }
   }
 
   @Override
