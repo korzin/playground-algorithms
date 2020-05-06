@@ -105,4 +105,28 @@ public class BSTreeTest {
     assertEquals(15, i);
   }
 
+  @Test
+  public void test_TraversalStrategy_PreOrder() {
+    BSTree<Integer, Object> bsTree = generateComplexBSTree1();
+
+    bsTree.setTraversalStrategy(new BSTree.TraversalStrategyPreOrder<>());
+
+    LinkedListQueue<Integer> expectedOrder =
+        LinkedListQueue.fromList(
+            Arrays.asList(
+                250, 240, 200, 150, 225, 300, 350, 750, 650, 600, 550, 505, 800, 850, 825));
+    int i = 0;
+
+//    for (BSTree<Integer, Object> entry : bsTree) {
+//      System.out.println("<> " + entry.getData().getKey());
+//    }
+    for (BSTree<Integer, Object> entry : bsTree) {
+      Integer key = entry.getData().getKey();
+      assertEquals(expectedOrder.dequeue(), key);
+      if (i++ > 100) {
+        break;
+      }
+    }
+    assertEquals(15, i);
+  }
 }

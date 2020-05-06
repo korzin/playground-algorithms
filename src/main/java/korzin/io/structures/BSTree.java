@@ -246,4 +246,34 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
     }
   }
 
+  public static class TraversalStrategyPreOrder<K extends Comparable<K>, V>
+      implements TraversalStrategy<K, V> {
+
+    @Override
+    public BSTree<K, V> getSuccessor(BSTree<K, V> node, boolean shouldFindStart) {
+      if (shouldFindStart) {
+        return node;
+      } else {
+        return doGetSuccessor(node, null);
+      }
+    }
+
+    private BSTree<K, V> doGetSuccessor(BSTree<K, V> curr, BSTree<K, V> prev) {
+      if (curr == null) {
+        return null;
+      } else if (prev == null || prev == curr.parent) {
+        if (curr.left != null) {
+          return curr.left;
+        } else if (curr.right != null) {
+          return curr.right;
+        } else {
+          return doGetSuccessor(curr.parent, curr);
+        }
+      } else if (prev == curr.left && curr.right != null) {
+        return curr.right;
+      } else {
+        return doGetSuccessor(curr.parent, curr);
+      }
+    }
+  }
 }
