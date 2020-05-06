@@ -11,42 +11,39 @@ public class BSTreeTest {
   @Test
   public void testSearchBTree() {
 
-    BSTree<Integer, String> searchTree = BSTree.initTree(100, "HEAD");
-    assertEquals(1, searchTree.height());
-    assertEquals(1, searchTree.size());
+    BSTree<Integer, String> bst = BSTree.initTree(100, "HEAD");
+    assertEquals(1, bst.height());
+    assertEquals(1, bst.size());
 
-    searchTree.add(500, "init: right");
-    searchTree.add(10000, "init: right right");
-    searchTree.add(2000, "init: right left");
-    searchTree.add(2500, "init: right left right");
-    searchTree.add(1500, "init: right left left");
-    searchTree.add(1000, "init: right left left left");
+    bst.add(500, "init: right");
+    bst.add(10000, "init: right right");
+    bst.add(2000, "init: right left");
+    bst.add(2500, "init: right left right");
+    bst.add(1500, "init: right left left");
+    bst.add(1000, "init: right left left left");
 
-    assertEquals(6, searchTree.height());
+    assertEquals(6, bst.height());
 
-    assertEquals((Integer) 10000, searchTree.getRight().getRight().getData().getKey());
+    assertEquals((Integer) 10000, bst.getRight().getRight().getData().getKey());
     assertEquals(
-        (Integer) 1000,
-        searchTree.getRight().getRight().getLeft().getLeft().getLeft().getData().getKey());
+        (Integer) 1000, bst.getRight().getRight().getLeft().getLeft().getLeft().getData().getKey());
 
-    searchTree.remove(1000);
-    assertNull(searchTree.getRight().getRight().getLeft().getLeft().getLeft());
-    searchTree.add(1000, "recreated 1000");
-    assertNotNull(searchTree.getRight().getRight().getLeft().getLeft().getLeft());
-    searchTree.add(2750, "2750");
-    searchTree.remove(2500);
-    assertEquals(
-        (Integer) 2750, searchTree.getRight().getRight().getLeft().getRight().getData().getKey());
-    searchTree.add(2500, "recreated 2500");
-    searchTree.add(2400, "long left 2500 -> 2400");
-    searchTree.add(2300, "long left for 2500 -> 2400 -> 2300");
-    assertNotNull(searchTree.getRight().getRight().getLeft().getRight());
-    assertNotNull(
-        searchTree.getRight().getRight().getLeft().getRight().getLeft().getLeft().getLeft());
+    bst.remove(1000);
+    assertNull(bst.getRight().getRight().getLeft().getLeft().getLeft());
+    bst.add(1000, "recreated 1000");
+    assertNotNull(bst.getRight().getRight().getLeft().getLeft().getLeft());
+    bst.add(2750, "2750");
+    bst.remove(2500);
+    assertEquals((Integer) 2750, bst.getRight().getRight().getLeft().getRight().getData().getKey());
+    bst.add(2500, "recreated 2500");
+    bst.add(2400, "long left 2500 -> 2400");
+    bst.add(2300, "long left for 2500 -> 2400 -> 2300");
+    assertNotNull(bst.getRight().getRight().getLeft().getRight());
+    assertNotNull(bst.getRight().getRight().getLeft().getRight().getLeft().getLeft().getLeft());
 
-    searchTree.remove(2000);
+    bst.remove(2000);
 
-    BSTree<Integer, String> node2750 = searchTree.getRight().getRight().getLeft();
+    BSTree<Integer, String> node2750 = bst.getRight().getRight().getLeft();
     assertEquals((Integer) 2750, node2750.getData().getKey());
     assertNull(node2750.getRight());
 
@@ -62,10 +59,8 @@ public class BSTreeTest {
     assertEquals((Integer) 1000, node1500.getLeft().getData().getKey());
   }
 
-  @Test
-  public void test_TraversalStrategy_IN_ORDER_BY_LOOP() {
-    BSTree<Integer, Object> bsTree =
-        BSTree.initTree(250, null, new BSTree.TraversalStrategyInOrderByLoop<>());
+  private BSTree<Integer, Object> generateComplexBSTree1() {
+    BSTree<Integer, Object> bsTree = BSTree.initTree(250, null);
 
     bsTree.add(240, null);
     bsTree.add(200, null);
@@ -85,13 +80,21 @@ public class BSTreeTest {
     bsTree.add(800, null);
     bsTree.add(850, null);
     bsTree.add(825, null);
+    return bsTree;
+  }
 
-    int i = 0;
+  @Test
+  public void test_TraversalStrategy_InOrder() {
+    BSTree<Integer, Object> bsTree = generateComplexBSTree1();
+
+    bsTree.setTraversalStrategy(new BSTree.TraversalStrategyInOrderByLoop<>());
+
     LinkedListQueue<Integer> expectedOrder =
         LinkedListQueue.fromList(
             Arrays.asList(
                 150, 200, 225, 240, 250, 300, 350, 505, 550, 600, 650, 750, 800, 825, 850));
 
+    int i = 0;
     for (BSTree<Integer, Object> entry : bsTree) {
       Integer key = entry.getData().getKey();
       assertEquals(expectedOrder.dequeue(), key);
@@ -99,5 +102,7 @@ public class BSTreeTest {
         break;
       }
     }
+    assertEquals(15, i);
   }
+
 }

@@ -156,29 +156,25 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
   @Override
   public Iterator<BSTree<K, V>> iterator() {
     return new Iterator<BSTree<K, V>>() {
-      BSTree<K, V> lowest = BSTree.this.getLowest();
-      final BSTree<K, V> startNode = lowest != null ? lowest : BSTree.this;
 
       boolean isFirst = true;
-      BSTree<K, V> curr = startNode;
+      BSTree<K, V> curr = BSTree.this;
 
       @Override
       public boolean hasNext() {
-        BSTree successor = traversalStrategy.getSuccessor(curr);
-        return isFirst || traversalStrategy.getSuccessor(curr) != null;
+        return traversalStrategy.getSuccessor(curr, isFirst) != null;
       }
 
       @Override
       public BSTree<K, V> next() {
-        if (isFirst) {
-          isFirst = false;
-          return curr;
-        }
-        BSTree<K, V> next = traversalStrategy.getSuccessor(curr);
+        BSTree<K, V> next = traversalStrategy.getSuccessor(curr, isFirst);
         if (next == null) {
           throw new IllegalStateException(
               "No elements left in a tree. "
                   + "Use TraversalStrategy::hasNext method to check existence.");
+        }
+        if (isFirst) {
+          isFirst = false;
         }
         curr = next;
         return next;
@@ -186,15 +182,14 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
     };
   }
 
-  private <K extends Comparable<K>, V> BSTree<K, V> getSuccessor(BSTree<K, V> node) {
-    throw new RuntimeException("Not implemented");
+  private BSTree<K, V> getSuccessor() {
+    return traversalStrategy.getSuccessor(this, false);
   }
 
   public interface TraversalStrategy<K extends Comparable<K>, V> {
-    BSTree<K, V> getSuccessor(BSTree<K, V> node);
+    BSTree<K, V> getSuccessor(BSTree<K, V> node, boolean shouldFindStart);
   }
 
-  //    IN_ORDER_BY_RECURSION,
   //    POST_ORDER,
   //    LEVEL_ORDER;
 
@@ -224,7 +219,15 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
   public static class TraversalStrategyInOrderByLoop<K extends Comparable<K>, V>
       implements TraversalStrategy<K, V> {
 
-    public BSTree<K, V> getSuccessor(BSTree<K, V> node) {
+    public BSTree<K, V> getSuccessor(BSTree<K, V> node, boolean shouldFindStart) {
+      if (shouldFindStart) {
+        BSTree<K, V> lowest = node.getLowest();
+        return lowest != null ? lowest : node;
+      }
+      return doGetSuccessor(node);
+    }
+
+    private BSTree<K, V> doGetSuccessor(BSTree<K, V> node) {
       if (node.right != null) {
         BSTree<K, V> curr = node.right;
         while (curr.left != null) {
@@ -242,4 +245,5 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
       }
     }
   }
+
 }
