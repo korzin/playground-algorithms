@@ -65,7 +65,7 @@ public class BSTreeTest {
   @Test
   public void test_TraversalStrategy_IN_ORDER_BY_LOOP() {
     BSTree<Integer, Object> bsTree =
-        BSTree.initTree(250, null, BSTree.TraversalStrategy.IN_ORDER_BY_LOOP);
+        BSTree.initTree(250, null, new BSTree.TraversalStrategyInOrderByLoop<>());
 
     bsTree.add(240, null);
     bsTree.add(200, null);

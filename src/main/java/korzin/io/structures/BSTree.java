@@ -7,27 +7,31 @@ import java.util.Objects;
 public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>> {
 
   private final Data<K, V> data;
-  private TraversalStrategy traversalStrategy;
+  private TraversalStrategy<K, V> traversalStrategy;
   private BSTree<K, V> parent;
   private BSTree<K, V> left;
   private BSTree<K, V> right;
 
   private BSTree(K key, V value) {
-    this(key, value, TraversalStrategy.IN_ORDER_BY_LOOP);
+    this(key, value, new TraversalStrategyInOrderByLoop<>());
   }
 
-  private BSTree(K key, V value, TraversalStrategy traversalStrategy) {
+  private BSTree(K key, V value, TraversalStrategy<K, V> traversalStrategy) {
     this.data = new Data<>(key, value);
     this.traversalStrategy = traversalStrategy;
   }
 
-  public static <SK extends Comparable<SK>, SV> BSTree<SK, SV> initTree(SK key, SV value) {
+  public static <K extends Comparable<K>, V> BSTree<K, V> initTree(K key, V value) {
     return new BSTree<>(key, value);
   }
 
-  public static <SK extends Comparable<SK>, SV> BSTree<SK, SV> initTree(
-      SK key, SV value, TraversalStrategy traversalStrategy) {
+  public static <K extends Comparable<K>, V> BSTree<K, V> initTree(
+      K key, V value, TraversalStrategy<K, V> traversalStrategy) {
     return new BSTree<>(key, value, traversalStrategy);
+  }
+
+  public void setTraversalStrategy(TraversalStrategy<K, V> traversalStrategy) {
+    this.traversalStrategy = traversalStrategy;
   }
 
   // for test
@@ -151,83 +155,48 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
 
   @Override
   public Iterator<BSTree<K, V>> iterator() {
-    return traversalStrategy.iterator(this);
-  }
+    return new Iterator<BSTree<K, V>>() {
+      BSTree<K, V> lowest = BSTree.this.getLowest();
+      final BSTree<K, V> startNode = lowest != null ? lowest : BSTree.this;
 
-  public enum TraversalStrategy {
-    PRE_ORDER,
-    IN_ORDER_BY_LOOP {
+      boolean isFirst = true;
+      BSTree<K, V> curr = startNode;
+
       @Override
-      public <TK extends Comparable<TK>, TV> Iterator<BSTree<TK, TV>> iterator(
-          BSTree<TK, TV> bsTree) {
-
-        BSTree<TK, TV> lowest = bsTree.getLowest();
-        final BSTree<TK, TV> startNode = lowest != null ? lowest : bsTree;
-
-        return new Iterator<BSTree<TK, TV>>() {
-          boolean isFirst = true;
-          BSTree<TK, TV> curr = startNode;
-
-          private BSTree<TK, TV> getSuccessor(BSTree<TK, TV> node) {
-            if (node.right != null) {
-              BSTree<TK, TV> curr = node.right;
-              while (curr.left != null) {
-                curr = curr.left;
-              }
-              return curr;
-            } else {
-              BSTree<TK, TV> parent = curr.parent;
-              BSTree<TK, TV> child = curr;
-              while (parent != null && parent.right == child) {
-                child = parent;
-                parent = parent.parent;
-              }
-              return parent;
-            }
-          }
-
-          //          private BSTree<TK,TV> recGetNextFor(BSTree<TK,TV> curr, BSTree<TK, TV> prev){
-          //            BSTree<TK,TV> next;
-          //            if(){
-          //              return recGetNextFor(curr.right, null);
-          //            }
-          //            if(curr.left == null && curr.right == null){
-          //
-          //            }
-          //          }
-
-          @Override
-          public boolean hasNext() {
-            return isFirst || getSuccessor(curr) != null;
-          }
-
-          @Override
-          public BSTree<TK, TV> next() {
-            if (isFirst) {
-              isFirst = false;
-              return curr;
-            }
-            BSTree<TK, TV> next = getSuccessor(curr);
-            if (next == null) {
-              throw new IllegalStateException(
-                  "No elements left in a tree. "
-                      + "Use TraversalStrategy::hasNext method to check existence.");
-            }
-            curr = next;
-            return next;
-          }
-        };
+      public boolean hasNext() {
+        BSTree successor = traversalStrategy.getSuccessor(curr);
+        return isFirst || traversalStrategy.getSuccessor(curr) != null;
       }
-    },
-    IN_ORDER_BY_RECURSION,
-    POST_ORDER,
-    LEVEL_ORDER;
 
-    public <TK extends Comparable<TK>, TV> Iterator<BSTree<TK, TV>> iterator(
-        BSTree<TK, TV> bsTree) {
-      throw new RuntimeException("Not implemented.");
-    }
+      @Override
+      public BSTree<K, V> next() {
+        if (isFirst) {
+          isFirst = false;
+          return curr;
+        }
+        BSTree<K, V> next = traversalStrategy.getSuccessor(curr);
+        if (next == null) {
+          throw new IllegalStateException(
+              "No elements left in a tree. "
+                  + "Use TraversalStrategy::hasNext method to check existence.");
+        }
+        curr = next;
+        return next;
+      }
+    };
   }
+
+  private <K extends Comparable<K>, V> BSTree<K, V> getSuccessor(BSTree<K, V> node) {
+    throw new RuntimeException("Not implemented");
+  }
+
+  public interface TraversalStrategy<K extends Comparable<K>, V> {
+    BSTree<K, V> getSuccessor(BSTree<K, V> node);
+  }
+
+  //    IN_ORDER_BY_RECURSION,
+  //    POST_ORDER,
+  //    LEVEL_ORDER;
 
   static class Data<NK, NV> {
     private NK key;
@@ -249,6 +218,28 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
     @Override
     public String toString() {
       return "key:" + key;
+    }
+  }
+
+  public static class TraversalStrategyInOrderByLoop<K extends Comparable<K>, V>
+      implements TraversalStrategy<K, V> {
+
+    public BSTree<K, V> getSuccessor(BSTree<K, V> node) {
+      if (node.right != null) {
+        BSTree<K, V> curr = node.right;
+        while (curr.left != null) {
+          curr = curr.left;
+        }
+        return curr;
+      } else {
+        BSTree<K, V> parent = node.parent;
+        BSTree<K, V> child = node;
+        while (parent != null && parent.right == child) {
+          child = parent;
+          parent = parent.parent;
+        }
+        return parent;
+      }
     }
   }
 }
