@@ -87,7 +87,7 @@ public class BSTreeTest {
   public void test_TraversalStrategy_InOrder() {
     BSTree<Integer, Object> bsTree = generateComplexBSTree1();
 
-    bsTree.setTraversalStrategy(new BSTree.TraversalStrategyInOrderByLoop<>());
+    bsTree.setIteratorTraversalStrategy(new BSTree.DepthFirstTraversalStrategyInOrderByLoop<>());
 
     LinkedListQueue<Integer> expectedOrder =
         LinkedListQueue.fromList(
@@ -109,7 +109,7 @@ public class BSTreeTest {
   public void test_TraversalStrategy_PreOrder() {
     BSTree<Integer, Object> bsTree = generateComplexBSTree1();
 
-    bsTree.setTraversalStrategy(new BSTree.TraversalStrategyPreOrder<>());
+    bsTree.setIteratorTraversalStrategy(new BSTree.DepthFirstTraversalStrategyPreOrder<>());
 
     LinkedListQueue<Integer> expectedOrder =
         LinkedListQueue.fromList(
@@ -134,7 +134,7 @@ public class BSTreeTest {
   public void test_TraversalStrategy_PostOrder() {
     BSTree<Integer, Object> bsTree = generateComplexBSTree1();
 
-    bsTree.setTraversalStrategy(new BSTree.TraversalStrategyPostOrder<>());
+    bsTree.setIteratorTraversalStrategy(new BSTree.DepthFirstTraversalStrategyPostOrder<>());
 
     LinkedListQueue<Integer> expectedOrder =
         LinkedListQueue.fromList(

@@ -7,18 +7,18 @@ import java.util.Objects;
 public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>> {
 
   private final Data<K, V> data;
-  private TraversalStrategy<K, V> traversalStrategy;
+  private DepthFirstTraversalStrategy<K, V> iteratorTraversalStrategy;
   private BSTree<K, V> parent;
   private BSTree<K, V> left;
   private BSTree<K, V> right;
 
   private BSTree(K key, V value) {
-    this(key, value, new TraversalStrategyInOrderByLoop<>());
+    this(key, value, new DepthFirstTraversalStrategyInOrderByLoop<>());
   }
 
-  private BSTree(K key, V value, TraversalStrategy<K, V> traversalStrategy) {
+  private BSTree(K key, V value, DepthFirstTraversalStrategy<K, V> iteratorTraversalStrategy) {
     this.data = new Data<>(key, value);
-    this.traversalStrategy = traversalStrategy;
+    this.iteratorTraversalStrategy = iteratorTraversalStrategy;
   }
 
   public static <K extends Comparable<K>, V> BSTree<K, V> initTree(K key, V value) {
@@ -26,12 +26,13 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
   }
 
   public static <K extends Comparable<K>, V> BSTree<K, V> initTree(
-      K key, V value, TraversalStrategy<K, V> traversalStrategy) {
+      K key, V value, DepthFirstTraversalStrategy<K, V> traversalStrategy) {
     return new BSTree<>(key, value, traversalStrategy);
   }
 
-  public void setTraversalStrategy(TraversalStrategy<K, V> traversalStrategy) {
-    this.traversalStrategy = traversalStrategy;
+  public void setIteratorTraversalStrategy(
+      DepthFirstTraversalStrategy<K, V> iteratorTraversalStrategy) {
+    this.iteratorTraversalStrategy = iteratorTraversalStrategy;
   }
 
   // for test
@@ -162,12 +163,12 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
 
       @Override
       public boolean hasNext() {
-        return traversalStrategy.getSuccessor(curr, isFirst) != null;
+        return iteratorTraversalStrategy.getSuccessor(curr, isFirst) != null;
       }
 
       @Override
       public BSTree<K, V> next() {
-        BSTree<K, V> next = traversalStrategy.getSuccessor(curr, isFirst);
+        BSTree<K, V> next = iteratorTraversalStrategy.getSuccessor(curr, isFirst);
         if (next == null) {
           throw new IllegalStateException(
               "No elements left in a tree. "
@@ -183,10 +184,10 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
   }
 
   private BSTree<K, V> getSuccessor() {
-    return traversalStrategy.getSuccessor(this, false);
+    return iteratorTraversalStrategy.getSuccessor(this, false);
   }
 
-  public interface TraversalStrategy<K extends Comparable<K>, V> {
+  public interface DepthFirstTraversalStrategy<K extends Comparable<K>, V> {
     BSTree<K, V> getSuccessor(BSTree<K, V> node, boolean shouldFindStart);
   }
 
@@ -216,8 +217,8 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
     }
   }
 
-  public static class TraversalStrategyInOrderByLoop<K extends Comparable<K>, V>
-      implements TraversalStrategy<K, V> {
+  public static class DepthFirstTraversalStrategyInOrderByLoop<K extends Comparable<K>, V>
+      implements DepthFirstTraversalStrategy<K, V> {
 
     public BSTree<K, V> getSuccessor(BSTree<K, V> node, boolean shouldFindStart) {
       if (shouldFindStart) {
@@ -246,8 +247,8 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
     }
   }
 
-  public static class TraversalStrategyPreOrder<K extends Comparable<K>, V>
-      implements TraversalStrategy<K, V> {
+  public static class DepthFirstTraversalStrategyPreOrder<K extends Comparable<K>, V>
+      implements DepthFirstTraversalStrategy<K, V> {
 
     @Override
     public BSTree<K, V> getSuccessor(BSTree<K, V> node, boolean shouldFindStart) {
@@ -277,8 +278,8 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
     }
   }
 
-  public static class TraversalStrategyPostOrder<K extends Comparable<K>, V>
-      implements TraversalStrategy<K, V> {
+  public static class DepthFirstTraversalStrategyPostOrder<K extends Comparable<K>, V>
+      implements DepthFirstTraversalStrategy<K, V> {
 
     @Override
     public BSTree<K, V> getSuccessor(BSTree<K, V> node, boolean shouldFindStart) {
@@ -294,21 +295,21 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
         return null;
       } else if (prev == null) {
         return recGetSuccessor(curr.parent, curr);
-      } else if (prev == curr.parent){
-        if(curr.left != null){
+      } else if (prev == curr.parent) {
+        if (curr.left != null) {
           return recGetSuccessor(curr.left, curr);
-        } else if (curr.right != null){
+        } else if (curr.right != null) {
           return recGetSuccessor(curr.right, curr);
         } else {
           return curr;
         }
-      } else if(prev == curr.left){
-        if(curr.right == null){
+      } else if (prev == curr.left) {
+        if (curr.right == null) {
           return curr;
         } else {
           return recGetSuccessor(curr.right, curr);
         }
-      } else if(prev == curr.right){
+      } else if (prev == curr.right) {
         return curr;
       } else {
         throw new IllegalStateException("Cannot handle iterator position.");
