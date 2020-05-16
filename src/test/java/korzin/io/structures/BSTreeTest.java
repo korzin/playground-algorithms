@@ -87,7 +87,7 @@ public class BSTreeTest {
   public void test_TraversalStrategy_InOrder() {
     BSTree<Integer, Object> bsTree = generateComplexBSTree1();
 
-    bsTree.setIteratorTraversalStrategy(new BSTree.DepthFirstTraversalStrategyInOrderByLoop<>());
+    bsTree.setIteratorDepthFirstStrategy(new BSTree.DepthFirstTraversalStrategyInOrderByLoop<>());
 
     LinkedListQueue<Integer> expectedOrder =
         LinkedListQueue.fromList(
@@ -109,7 +109,7 @@ public class BSTreeTest {
   public void test_TraversalStrategy_PreOrder() {
     BSTree<Integer, Object> bsTree = generateComplexBSTree1();
 
-    bsTree.setIteratorTraversalStrategy(new BSTree.DepthFirstTraversalStrategyPreOrder<>());
+    bsTree.setIteratorDepthFirstStrategy(new BSTree.DepthFirstTraversalStrategyPreOrder<>());
 
     LinkedListQueue<Integer> expectedOrder =
         LinkedListQueue.fromList(
@@ -117,9 +117,9 @@ public class BSTreeTest {
                 250, 240, 200, 150, 225, 300, 350, 750, 650, 600, 550, 505, 800, 850, 825));
     int i = 0;
 
-//    for (BSTree<Integer, Object> entry : bsTree) {
-//      System.out.println("<> " + entry.getData().getKey());
-//    }
+    //    for (BSTree<Integer, Object> entry : bsTree) {
+    //      System.out.println("<> " + entry.getData().getKey());
+    //    }
     for (BSTree<Integer, Object> entry : bsTree) {
       Integer key = entry.getData().getKey();
       assertEquals(expectedOrder.dequeue(), key);
@@ -134,20 +134,40 @@ public class BSTreeTest {
   public void test_TraversalStrategy_PostOrder() {
     BSTree<Integer, Object> bsTree = generateComplexBSTree1();
 
-    bsTree.setIteratorTraversalStrategy(new BSTree.DepthFirstTraversalStrategyPostOrder<>());
+    bsTree.setIteratorDepthFirstStrategy(new BSTree.DepthFirstTraversalStrategyPostOrder<>());
 
     LinkedListQueue<Integer> expectedOrder =
         LinkedListQueue.fromList(
             Arrays.asList(
-               150, 225, 200, 240, 505, 550, 600, 650, 825, 850, 800, 750, 350, 300, 250));
+                150, 225, 200, 240, 505, 550, 600, 650, 825, 850, 800, 750, 350, 300, 250));
     int i = 0;
 
-//    for (BSTree<Integer, Object> entry : bsTree) {
-//      System.out.println("<> " + entry.getData().getKey());
-//    }
+    //    for (BSTree<Integer, Object> entry : bsTree) {
+    //      System.out.println("<> " + entry.getData().getKey());
+    //    }
     for (BSTree<Integer, Object> entry : bsTree) {
       Integer key = entry.getData().getKey();
       assertEquals(expectedOrder.dequeue(), key);
+      if (i++ > 100) {
+        break;
+      }
+    }
+    assertEquals(15, i);
+  }
+
+  @Test
+  public void test_BreathFirstTraversal() {
+    BSTree<Integer, Object> bsTree = generateComplexBSTree1();
+
+    LinkedListQueue<Integer> expectedOrder =
+        LinkedListQueue.fromList(
+            Arrays.asList(
+                250, 240, 300, 200, 350, 150, 225, 750, 650, 800, 600, 850, 550, 825, 505));
+    int i = 0;
+
+    Queue<BSTree<Integer, Object>> actualOrder = bsTree.asBreadthFirstQueue();
+    while (!actualOrder.empty()) {
+      assertEquals(expectedOrder.dequeue(), actualOrder.dequeue().getData().getKey());
       if (i++ > 100) {
         break;
       }

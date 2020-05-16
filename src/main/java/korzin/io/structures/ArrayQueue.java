@@ -30,4 +30,9 @@ public class ArrayQueue<T> implements Queue<T> {
     pullIndex = pullIndex == arr.length - 1 ? 0 : pullIndex + 1;
     return resp;
   }
+
+  @Override
+  public T top() {
+    return arr[pullIndex];
+  }
 }

@@ -7,4 +7,6 @@ public interface Queue<T> {
   boolean empty();
 
   T dequeue();
+
+  T top();
 }

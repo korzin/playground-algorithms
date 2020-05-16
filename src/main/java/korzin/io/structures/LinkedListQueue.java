@@ -31,7 +31,8 @@ public class LinkedListQueue<T> implements Queue<T> {
     return tail;
   }
 
-  private T top() {
+  @Override
+  public T top() {
     TwoDirLList.Node<T> tail = linkedList.topBack();
     return tail == null ? null : tail.getValue();
   }

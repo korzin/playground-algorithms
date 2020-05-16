@@ -7,7 +7,7 @@ import java.util.Objects;
 public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>> {
 
   private final Data<K, V> data;
-  private DepthFirstTraversalStrategy<K, V> iteratorTraversalStrategy;
+  private DepthFirstTraversalStrategy<K, V> iteratorDepthFirstStrategy;
   private BSTree<K, V> parent;
   private BSTree<K, V> left;
   private BSTree<K, V> right;
@@ -16,9 +16,9 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
     this(key, value, new DepthFirstTraversalStrategyInOrderByLoop<>());
   }
 
-  private BSTree(K key, V value, DepthFirstTraversalStrategy<K, V> iteratorTraversalStrategy) {
+  private BSTree(K key, V value, DepthFirstTraversalStrategy<K, V> iteratorDepthFirstStrategy) {
     this.data = new Data<>(key, value);
-    this.iteratorTraversalStrategy = iteratorTraversalStrategy;
+    this.iteratorDepthFirstStrategy = iteratorDepthFirstStrategy;
   }
 
   public static <K extends Comparable<K>, V> BSTree<K, V> initTree(K key, V value) {
@@ -30,9 +30,9 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
     return new BSTree<>(key, value, traversalStrategy);
   }
 
-  public void setIteratorTraversalStrategy(
-      DepthFirstTraversalStrategy<K, V> iteratorTraversalStrategy) {
-    this.iteratorTraversalStrategy = iteratorTraversalStrategy;
+  public void setIteratorDepthFirstStrategy(
+      DepthFirstTraversalStrategy<K, V> iteratorDepthFirstStrategy) {
+    this.iteratorDepthFirstStrategy = iteratorDepthFirstStrategy;
   }
 
   // for test
@@ -154,6 +154,23 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
         + '}';
   }
 
+  public Queue<BSTree<K, V>> asBreadthFirstQueue() {
+    Queue<BSTree<K, V>> result = new LinkedListQueue<>();
+    Queue<BSTree<K, V>> tmp = new LinkedListQueue<>();
+    tmp.enqueue(this);
+    while (!tmp.empty()) {
+      BSTree<K, V> curr = tmp.dequeue();
+      result.enqueue(curr);
+      if (curr.left != null) {
+        tmp.enqueue(curr.left);
+      }
+      if (curr.right != null) {
+        tmp.enqueue(curr.right);
+      }
+    }
+    return result;
+  }
+
   @Override
   public Iterator<BSTree<K, V>> iterator() {
     return new Iterator<BSTree<K, V>>() {
@@ -163,12 +180,12 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
 
       @Override
       public boolean hasNext() {
-        return iteratorTraversalStrategy.getSuccessor(curr, isFirst) != null;
+        return iteratorDepthFirstStrategy.getSuccessor(curr, isFirst) != null;
       }
 
       @Override
       public BSTree<K, V> next() {
-        BSTree<K, V> next = iteratorTraversalStrategy.getSuccessor(curr, isFirst);
+        BSTree<K, V> next = iteratorDepthFirstStrategy.getSuccessor(curr, isFirst);
         if (next == null) {
           throw new IllegalStateException(
               "No elements left in a tree. "
@@ -184,15 +201,12 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
   }
 
   private BSTree<K, V> getSuccessor() {
-    return iteratorTraversalStrategy.getSuccessor(this, false);
+    return iteratorDepthFirstStrategy.getSuccessor(this, false);
   }
 
   public interface DepthFirstTraversalStrategy<K extends Comparable<K>, V> {
     BSTree<K, V> getSuccessor(BSTree<K, V> node, boolean shouldFindStart);
   }
-
-  //    POST_ORDER,
-  //    LEVEL_ORDER;
 
   static class Data<NK, NV> {
     private NK key;
