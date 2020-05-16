@@ -129,4 +129,29 @@ public class BSTreeTest {
     }
     assertEquals(15, i);
   }
+
+  @Test
+  public void test_TraversalStrategy_PostOrder() {
+    BSTree<Integer, Object> bsTree = generateComplexBSTree1();
+
+    bsTree.setTraversalStrategy(new BSTree.TraversalStrategyPostOrder<>());
+
+    LinkedListQueue<Integer> expectedOrder =
+        LinkedListQueue.fromList(
+            Arrays.asList(
+               150, 225, 200, 240, 505, 550, 600, 650, 825, 850, 800, 750, 350, 300, 250));
+    int i = 0;
+
+//    for (BSTree<Integer, Object> entry : bsTree) {
+//      System.out.println("<> " + entry.getData().getKey());
+//    }
+    for (BSTree<Integer, Object> entry : bsTree) {
+      Integer key = entry.getData().getKey();
+      assertEquals(expectedOrder.dequeue(), key);
+      if (i++ > 100) {
+        break;
+      }
+    }
+    assertEquals(15, i);
+  }
 }

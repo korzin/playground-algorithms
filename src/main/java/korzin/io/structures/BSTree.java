@@ -276,4 +276,43 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
       }
     }
   }
+
+  public static class TraversalStrategyPostOrder<K extends Comparable<K>, V>
+      implements TraversalStrategy<K, V> {
+
+    @Override
+    public BSTree<K, V> getSuccessor(BSTree<K, V> node, boolean shouldFindStart) {
+      if (shouldFindStart) {
+        BSTree<K, V> lowest = node.getLowest();
+        return lowest != null ? lowest : node;
+      }
+      return recGetSuccessor(node, null);
+    }
+
+    private BSTree<K, V> recGetSuccessor(BSTree<K, V> curr, BSTree<K, V> prev) {
+      if (curr == null) {
+        return null;
+      } else if (prev == null) {
+        return recGetSuccessor(curr.parent, curr);
+      } else if (prev == curr.parent){
+        if(curr.left != null){
+          return recGetSuccessor(curr.left, curr);
+        } else if (curr.right != null){
+          return recGetSuccessor(curr.right, curr);
+        } else {
+          return curr;
+        }
+      } else if(prev == curr.left){
+        if(curr.right == null){
+          return curr;
+        } else {
+          return recGetSuccessor(curr.right, curr);
+        }
+      } else if(prev == curr.right){
+        return curr;
+      } else {
+        throw new IllegalStateException("Cannot handle iterator position.");
+      }
+    }
+  }
 }
