@@ -2,6 +2,8 @@ package korzin.io.structures;
 
 import org.junit.Test;
 
+import java.util.Iterator;
+
 import static org.junit.Assert.*;
 
 public class TwoDirLListTest {
@@ -73,5 +75,31 @@ public class TwoDirLListTest {
     ll.addBefore(ll.getByIndex(4), 41);
 
     assertTrue(ll.find(333));
+  }
+
+  @Test
+  public void testLLIterator() {
+    TwoDirLList<Integer> ll = new TwoDirLList<>();
+
+    ll.pushFront(111);
+    ll.pushBack(222);
+    ll.pushFront(333);
+    ll.pushBack(444);
+
+    for (Integer curr : ll) {
+      System.out.println("<> " + curr);
+    }
+
+    Iterator<Integer> iter = ll.iterator();
+
+    assertTrue(iter.hasNext());
+    assertEquals((Integer) 333, iter.next());
+    assertTrue(iter.hasNext());
+    assertEquals((Integer) 111, iter.next());
+    assertTrue(iter.hasNext());
+    assertEquals((Integer) 222, iter.next());
+    assertTrue(iter.hasNext());
+    assertEquals((Integer) 444, iter.next());
+    assertFalse(iter.hasNext());
   }
 }

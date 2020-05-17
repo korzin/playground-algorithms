@@ -1,8 +1,9 @@
 package korzin.io.structures;
 
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-public class TwoDirLList<T> {
+public class TwoDirLList<T> implements Iterable<T> {
 
   private Node<T> head;
   private Node<T> tail;
@@ -174,6 +175,30 @@ public class TwoDirLList<T> {
       curr = curr.next;
     }
     return sb.toString();
+  }
+
+  @Override
+  public Iterator<T> iterator() {
+    return new Iterator<T>() {
+
+      private Node<T> curr = TwoDirLList.this.head;
+
+      @Override
+      public boolean hasNext() {
+        return curr != null;
+      }
+
+      @Override
+      public T next() {
+        if (curr != null) {
+          Node<T> next = curr;
+          curr = curr.next;
+          return next.value;
+        } else {
+          return null;
+        }
+      }
+    };
   }
 
   public static class Node<N> {
