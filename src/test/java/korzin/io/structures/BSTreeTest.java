@@ -89,8 +89,8 @@ public class BSTreeTest {
 
     bsTree.setIteratorDepthFirstStrategy(new BSTree.DepthFirstTraversalStrategyInOrderByLoop<>());
 
-    LinkedListQueue<Integer> expectedOrder =
-        LinkedListQueue.fromList(
+    Queue<Integer> expectedOrder =
+        new LinkedListQueue<>(
             Arrays.asList(
                 150, 200, 225, 240, 250, 300, 350, 505, 550, 600, 650, 750, 800, 825, 850));
 
@@ -111,8 +111,8 @@ public class BSTreeTest {
 
     bsTree.setIteratorDepthFirstStrategy(new BSTree.DepthFirstTraversalStrategyPreOrder<>());
 
-    LinkedListQueue<Integer> expectedOrder =
-        LinkedListQueue.fromList(
+    Queue<Integer> expectedOrder =
+        new LinkedListQueue<>(
             Arrays.asList(
                 250, 240, 200, 150, 225, 300, 350, 750, 650, 600, 550, 505, 800, 850, 825));
     int i = 0;
@@ -136,8 +136,8 @@ public class BSTreeTest {
 
     bsTree.setIteratorDepthFirstStrategy(new BSTree.DepthFirstTraversalStrategyPostOrder<>());
 
-    LinkedListQueue<Integer> expectedOrder =
-        LinkedListQueue.fromList(
+    Queue<Integer> expectedOrder =
+        new LinkedListQueue<>(
             Arrays.asList(
                 150, 225, 200, 240, 505, 550, 600, 650, 825, 850, 800, 750, 350, 300, 250));
     int i = 0;
@@ -159,13 +159,15 @@ public class BSTreeTest {
   public void test_BreathFirstTraversal() {
     BSTree<Integer, Object> bsTree = generateComplexBSTree1();
 
-    LinkedListQueue<Integer> expectedOrder =
-        LinkedListQueue.fromList(
+    Queue<Integer> expectedOrder =
+        new LinkedListQueue<>(
             Arrays.asList(
                 250, 240, 300, 200, 350, 150, 225, 750, 650, 800, 600, 850, 550, 825, 505));
     int i = 0;
 
-    Queue<BSTree<Integer, Object>> actualOrder = bsTree.asBreadthFirstQueue();
+    Queue<BSTree<Integer, Object>> actualOrder =
+        new LinkedListQueue<>(bsTree.asBreadthFirstLinkedList());
+
     while (!actualOrder.empty()) {
       assertEquals(expectedOrder.dequeue(), actualOrder.dequeue().getData().getKey());
       if (i++ > 100) {

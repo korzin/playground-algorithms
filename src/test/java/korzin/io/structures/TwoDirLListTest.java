@@ -74,6 +74,13 @@ public class TwoDirLListTest {
     ll.addBefore(ll.getByIndex(4), 42);
     ll.addBefore(ll.getByIndex(4), 41);
 
+    assertEquals((Integer) 43, ll.getByIndex(6).getValue());
+    assertEquals(ll.size(), 8);
+
+    ll.add(4, 40);
+    ll.add(4, 39);
+    assertEquals((Integer) 39, ll.getByIndex(4).getValue());
+    assertEquals((Integer) 43, ll.getByIndex(8).getValue());
     assertTrue(ll.find(333));
   }
 

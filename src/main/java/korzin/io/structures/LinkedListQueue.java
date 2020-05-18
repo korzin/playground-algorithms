@@ -4,14 +4,18 @@ import java.util.List;
 
 public class LinkedListQueue<T> implements Queue<T> {
 
-  private TwoDirLList<T> linkedList = new TwoDirLList<>();
+  private final TwoDirLList<T> linkedList;
 
-  public static <TT> LinkedListQueue<TT> fromList(List<TT> list) {
-    LinkedListQueue<TT> queue = new LinkedListQueue<>();
-    for (TT el : list) {
-      queue.enqueue(el);
-    }
-    return queue;
+  public LinkedListQueue() {
+    linkedList = new TwoDirLList<>();
+  }
+
+  public LinkedListQueue(TwoDirLList<T> linkedList) {
+    this.linkedList = linkedList;
+  }
+
+  public LinkedListQueue(List<T> list) {
+    this.linkedList = new TwoDirLList<>(list);
   }
 
   @Override

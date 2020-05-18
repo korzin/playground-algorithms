@@ -1,12 +1,21 @@
 package korzin.io.structures;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public class TwoDirLList<T> implements Iterable<T> {
 
   private Node<T> head;
   private Node<T> tail;
+
+  public TwoDirLList() {}
+
+  public TwoDirLList(List<T> sourceList) {
+    for (T curr : sourceList) {
+      this.pushFront(curr);
+    }
+  }
 
   public int size() {
     if (empty()) return 0;
@@ -30,9 +39,9 @@ public class TwoDirLList<T> implements Iterable<T> {
     return curr;
   }
 
-  public void pushFront(T key) {
+  public void pushFront(T value) {
     Node<T> newNode = new Node<T>();
-    newNode.value = key;
+    newNode.value = value;
 
     if (head != null) {
       Node<T> oldHead = head;
@@ -60,9 +69,9 @@ public class TwoDirLList<T> implements Iterable<T> {
     }
   }
 
-  public void pushBack(T key) {
+  public void pushBack(T value) {
     Node<T> newNode = new Node<T>();
-    newNode.value = key;
+    newNode.value = value;
 
     if (tail != null) {
       Node<T> oldTail = tail;
@@ -90,26 +99,26 @@ public class TwoDirLList<T> implements Iterable<T> {
     }
   }
 
-  public boolean find(T key) {
+  public boolean find(T value) {
     if (head == null) return false;
     Node<T> curr = head;
     while (curr != null) {
-      if (curr.value.equals(key)) return true;
+      if (curr.value.equals(value)) return true;
       curr = curr.next;
     }
     return false;
   }
 
-  public void erase(T key) {
+  public void erase(T value) {
     if (head == null) {
       throw new NoSuchElementException();
-    } else if (head.value == key) {
+    } else if (head.value == value) {
       popFront();
-    } else if (tail.value == key) {
+    } else if (tail.value == value) {
       popBack();
     } else {
       Node<T> curr = head;
-      while (curr.next != null && curr.next.value.equals(key)) {
+      while (curr.next != null && curr.next.value.equals(value)) {
         curr = curr.next;
       }
       if (curr.next == null) {
@@ -127,14 +136,23 @@ public class TwoDirLList<T> implements Iterable<T> {
     return head == null;
   }
 
-  public void addBefore(Node<T> node, T key) {
+  public void add(int index, T value) {
+    Node<T> nodeToInsertBefore = getByIndex(index);
+    if (nodeToInsertBefore == null) {
+      throw new IndexOutOfBoundsException(
+          "List size is " + size() + ", but requested index is " + index);
+    }
+    addBefore(nodeToInsertBefore, value);
+  }
+
+  public void addBefore(Node<T> node, T value) {
     if (head == null) {
       throw new NoSuchElementException();
     } else if (head.value == node.value) {
-      pushFront(key);
+      pushFront(value);
     } else {
       Node<T> newOne = new Node<>();
-      newOne.value = key;
+      newOne.value = value;
 
       newOne.prev = node.prev;
       newOne.next = node;
@@ -145,14 +163,14 @@ public class TwoDirLList<T> implements Iterable<T> {
     }
   }
 
-  public void addAfter(Node<T> node, T key) {
+  public void addAfter(Node<T> node, T value) {
     if (head == null) {
       throw new NoSuchElementException();
     } else if (tail.value == node.value) {
-      pushBack(key);
+      pushBack(value);
     } else {
       Node<T> newOne = new Node<>();
-      newOne.value = key;
+      newOne.value = value;
 
       newOne.prev = node;
       newOne.next = node.next;
@@ -168,10 +186,9 @@ public class TwoDirLList<T> implements Iterable<T> {
     if (empty()) return "empty";
 
     StringBuilder sb = new StringBuilder();
-    sb.append(">>>");
     Node curr = head;
     while (curr != null) {
-      sb.append(" ").append(curr.value);
+      sb.append(" ==> ").append(curr.value);
       curr = curr.next;
     }
     return sb.toString();
@@ -182,17 +199,23 @@ public class TwoDirLList<T> implements Iterable<T> {
     return new Iterator<T>() {
 
       private Node<T> curr = TwoDirLList.this.head;
+      private boolean isFirst = true;
 
       @Override
       public boolean hasNext() {
-        return curr != null;
+        return curr != null && (isFirst || curr.next != null);
       }
 
       @Override
       public T next() {
         if (curr != null) {
-          Node<T> next = curr;
-          curr = curr.next;
+          Node<T> next;
+          if (isFirst) {
+            next = curr;
+            isFirst = false;
+          } else {
+            next = curr = curr.next;
+          }
           return next.value;
         } else {
           return null;
@@ -212,6 +235,10 @@ public class TwoDirLList<T> implements Iterable<T> {
 
     public Node<N> getNext() {
       return next;
+    }
+
+    public Node<N> getPrev() {
+      return prev;
     }
 
     @Override

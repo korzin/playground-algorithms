@@ -154,21 +154,20 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
         + '}';
   }
 
-  public Queue<BSTree<K, V>> asBreadthFirstQueue() {
-    Queue<BSTree<K, V>> result = new LinkedListQueue<>();
-    Queue<BSTree<K, V>> tmp = new LinkedListQueue<>();
-    tmp.enqueue(this);
-    while (!tmp.empty()) {
-      BSTree<K, V> curr = tmp.dequeue();
-      result.enqueue(curr);
-      if (curr.left != null) {
-        tmp.enqueue(curr.left);
+  public TwoDirLList<BSTree<K, V>> asBreadthFirstLinkedList() {
+    TwoDirLList<BSTree<K, V>> linkedList = new TwoDirLList<>();
+    linkedList.pushFront(this);
+    TwoDirLList.Node<BSTree<K, V>> curr = linkedList.topBack();
+    do {
+      BSTree<K, V> currBTRee = curr.getValue();
+      if (currBTRee.left != null) {
+        linkedList.pushFront(currBTRee.left);
       }
-      if (curr.right != null) {
-        tmp.enqueue(curr.right);
+      if (currBTRee.right != null) {
+        linkedList.pushFront(currBTRee.right);
       }
-    }
-    return result;
+    } while ((curr = curr.getPrev()) != null);
+    return linkedList;
   }
 
   @Override
