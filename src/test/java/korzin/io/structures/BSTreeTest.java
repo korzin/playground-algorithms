@@ -57,6 +57,10 @@ public class BSTreeTest {
     BSTree<Integer, String> node1500 = node2300.getLeft();
     assertEquals((Integer) 1500, node1500.getData().getKey());
     assertEquals((Integer) 1000, node1500.getLeft().getData().getKey());
+
+    assertEquals((Integer) 100, bst.getHead().getData().getKey());
+    assertEquals((Integer) 100, bst.getLowest().getData().getKey());
+    assertEquals((Integer) 10000, bst.getHighest().getData().getKey());
   }
 
   private BSTree<Integer, Object> generateComplexBSTree1() {

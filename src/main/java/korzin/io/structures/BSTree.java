@@ -86,12 +86,36 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
     return this;
   }
 
-  private BSTree<K, V> getLowest() {
+  public BSTree<K, V> getHead() {
+    BSTree<K, V> curr = this;
+    while (curr.parent != null) {
+      curr = curr.parent;
+    }
+    return curr;
+  }
+
+  public BSTree<K, V> getLowest() {
     BSTree<K, V> curr = this;
     while (curr.left != null) {
       curr = curr.left;
     }
     return curr;
+  }
+
+  public BSTree<K, V> getHighest() {
+    BSTree<K, V> curr = getHead();
+    while (curr.right != null) {
+      curr = curr.right;
+    }
+    return curr;
+  }
+
+  public final BSTree<K, V> getHigherEntryThan(K key) {
+    return null; // TODO
+  }
+
+  public final BSTree<K, V> getLowerEntryThan(K key) {
+    return null; // TODO
   }
 
   public V remove(K key) {
