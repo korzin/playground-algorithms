@@ -4,18 +4,18 @@ import java.util.List;
 
 public class LinkedListQueue<T> implements Queue<T> {
 
-  private final TwoDirLList<T> linkedList;
+  private final BiDirectList<T> linkedList;
 
   public LinkedListQueue() {
-    linkedList = new TwoDirLList<>();
+    linkedList = new BiDirectList<>();
   }
 
-  public LinkedListQueue(TwoDirLList<T> linkedList) {
+  public LinkedListQueue(BiDirectList<T> linkedList) {
     this.linkedList = linkedList;
   }
 
   public LinkedListQueue(List<T> list) {
-    this.linkedList = new TwoDirLList<>(list);
+    this.linkedList = new BiDirectList<>(list);
   }
 
   @Override
@@ -37,7 +37,7 @@ public class LinkedListQueue<T> implements Queue<T> {
 
   @Override
   public T top() {
-    TwoDirLList.Node<T> tail = linkedList.topBack();
+    BiDirectList.Node<T> tail = linkedList.topBack();
     return tail == null ? null : tail.getValue();
   }
 }

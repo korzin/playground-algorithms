@@ -4,14 +4,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-public class TwoDirLList<T> implements Iterable<T> {
+public class BiDirectList<T> implements Iterable<T> {
 
   private Node<T> head;
   private Node<T> tail;
 
-  public TwoDirLList() {}
+  public BiDirectList() {}
 
-  public TwoDirLList(List<T> sourceList) {
+  public BiDirectList(List<T> sourceList) {
     for (T curr : sourceList) {
       this.pushFront(curr);
     }
@@ -20,7 +20,7 @@ public class TwoDirLList<T> implements Iterable<T> {
   public int size() {
     if (empty()) return 0;
     int size = 0;
-    TwoDirLList.Node curr = head;
+    BiDirectList.Node curr = head;
     while (curr != null) {
       size++;
       curr = curr.next;
@@ -198,7 +198,7 @@ public class TwoDirLList<T> implements Iterable<T> {
   public Iterator<T> iterator() {
     return new Iterator<T>() {
 
-      private Node<T> curr = TwoDirLList.this.head;
+      private Node<T> curr = BiDirectList.this.head;
       private boolean isFirst = true;
 
       @Override
@@ -226,8 +226,8 @@ public class TwoDirLList<T> implements Iterable<T> {
 
   public static class Node<N> {
     private N value;
-    private TwoDirLList.Node<N> next;
-    private TwoDirLList.Node<N> prev;
+    private BiDirectList.Node<N> next;
+    private BiDirectList.Node<N> prev;
 
     public N getValue() {
       return value;

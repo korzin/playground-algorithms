@@ -178,10 +178,10 @@ public class BSTree<K extends Comparable<K>, V> implements Iterable<BSTree<K, V>
         + '}';
   }
 
-  public TwoDirLList<BSTree<K, V>> asBreadthFirstLinkedList() {
-    TwoDirLList<BSTree<K, V>> linkedList = new TwoDirLList<>();
+  public BiDirectList<BSTree<K, V>> asBreadthFirstLinkedList() {
+    BiDirectList<BSTree<K, V>> linkedList = new BiDirectList<>();
     linkedList.pushFront(this);
-    TwoDirLList.Node<BSTree<K, V>> curr = linkedList.topBack();
+    BiDirectList.Node<BSTree<K, V>> curr = linkedList.topBack();
     do {
       BSTree<K, V> currBTRee = curr.getValue();
       if (currBTRee.left != null) {

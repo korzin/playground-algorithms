@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Stack<T> {
 
-  private TwoDirLList<T> linkedList = new TwoDirLList<>();
+  private BiDirectList<T> linkedList = new BiDirectList<>();
 
   public static <ST> Stack<ST> fromList(List<ST> list) {
     Stack<ST> stack = new Stack<>();
@@ -19,7 +19,7 @@ public class Stack<T> {
   }
 
   public T top() {
-    TwoDirLList.Node<T> head = linkedList.topFront();
+    BiDirectList.Node<T> head = linkedList.topFront();
     return head == null ? null : head.getValue();
   }
 

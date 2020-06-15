@@ -6,12 +6,12 @@ import java.util.Iterator;
 
 import static org.junit.Assert.*;
 
-public class TwoDirLListTest {
+public class BiDirectListTest {
 
   @Test
   public void testLL() {
 
-    TwoDirLList<Integer> ll = new TwoDirLList<>();
+    BiDirectList<Integer> ll = new BiDirectList<>();
 
     assertTrue(ll.empty());
     assertEquals(0, ll.size());
@@ -38,7 +38,7 @@ public class TwoDirLListTest {
 
     assertEquals(4, ll.size());
 
-    TwoDirLList.Node<Integer> _22 = ll.getByIndex(2);
+    BiDirectList.Node<Integer> _22 = ll.getByIndex(2);
 
     ll.addAfter(_22, 333);
 
@@ -86,7 +86,7 @@ public class TwoDirLListTest {
 
   @Test
   public void testLLIterator() {
-    TwoDirLList<Integer> ll = new TwoDirLList<>();
+    BiDirectList<Integer> ll = new BiDirectList<>();
 
     ll.pushFront(111);
     ll.pushBack(222);
